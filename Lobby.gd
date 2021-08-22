@@ -28,16 +28,21 @@ func _player_disconnected(id: int) -> void:
 
 
 func _connected_ok() -> void:
-	print("connected ok")
+	$Connect.hide()
+	$Players.show()
+	$Players/Start.hide()
+	print("Connection ok")
 
 
 func _connected_fail() -> void:
-	print("connected fail")
+	print("Connection fail")
 
 
 func _server_disconnected() -> void:
-	# Kick to main menu or something
-	pass
+	players.clear()
+	$Players.hide()
+	$Connect.show()
+	print("Server disconnected")
 
 
 remote func register_player(name: String):
@@ -55,31 +60,29 @@ func refresh_lobby() -> void:
 
 
 func _on_Join_pressed() -> void:
-	var peer = NetworkedMultiplayerENet.new()
-	var ip = $Connect/IP.text
+	var peer := NetworkedMultiplayerENet.new()
+	var ip: String = $Connect/IP.text
 	if ip.empty():
 		peer.create_client($Connect/IP.placeholder_text, DEFAULT_PORT)
 	else:
 		peer.create_client(ip, DEFAULT_PORT)
 	get_tree().network_peer = peer
-	print("Client created!")
 	player_name = $Connect/Name.text
-	$Connect.hide()
-	$Players.show()
-	$Players/Start.hide()
+	print("Client created")
 
 
 func _on_Host_pressed() -> void:
-	var peer = NetworkedMultiplayerENet.new()
+	var peer := NetworkedMultiplayerENet.new()
 	peer.create_server(DEFAULT_PORT, MAX_PLAYERS)
 	get_tree().network_peer = peer
-	print("Server hosted!")
 	player_name = $Connect/Name.text
 	$Connect.hide()
 	$Players.show()
 	refresh_lobby()
+	print("Server hosted")
 
 
 func _on_Start_pressed() -> void:
 	assert(get_tree().is_network_server())
+	print("Game started")
 	
