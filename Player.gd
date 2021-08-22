@@ -1,16 +1,18 @@
 extends KinematicBody2D
 
-export var move_speed: float = 200
+export var move_speed: float = 400
 
 puppet var puppet_pos := Vector2()
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
 	if is_network_master():
 		$Camera2D.make_current()
 
+
 func _process(delta: float) -> void:
 	pass
+
 
 func _physics_process(delta: float) -> void:
 	var velocity := Vector2()
@@ -29,7 +31,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		position = puppet_pos
 	
-	velocity = move_and_slide(velocity, Vector2.UP)
+	velocity = move_and_slide(velocity)
 	if not is_network_master():
 		puppet_pos = position
 
