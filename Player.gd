@@ -1,8 +1,8 @@
 extends KinematicBody2D
 
-var speed: float = 400
-var jump_speed: float = -800
-var gravity: float = 2000
+var speed: float = 700
+var jump_speed: float = -1600
+var gravity: float = 5500
 
 var velocity := Vector2()
 var jumping := false
@@ -20,6 +20,8 @@ func _physics_process(delta: float) -> void:
 	if is_network_master():
 		if Input.is_action_pressed("ui_up") and is_on_floor():
 			velocity.y = jump_speed
+		if not Input.is_action_pressed("ui_up") and velocity.y < 0:
+			velocity.y = lerp(velocity.y, 0, 0.2)
 		if Input.is_action_pressed("ui_left"):
 			velocity.x -= speed
 		if Input.is_action_pressed("ui_right"):
@@ -28,7 +30,6 @@ func _physics_process(delta: float) -> void:
 		rpc_unreliable("update_player", position)
 	else:
 		position = puppet_pos
-		#position = lerp(position, puppet_pos, 10)
 	velocity = move_and_slide(velocity, Vector2.UP)
 	if not is_network_master():
 		puppet_pos = position
