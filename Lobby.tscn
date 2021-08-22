@@ -1,0 +1,129 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Lobby.gd" type="Script" id=1]
+
+[node name="Lobby" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.561279
+margin_top = -0.561218
+margin_right = 0.561279
+margin_bottom = -0.561218
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Connect" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -175.0
+margin_top = -107.0
+margin_right = 175.0
+margin_bottom = 107.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameLabel" type="Label" parent="Connect"]
+margin_left = 70.0542
+margin_top = 46.8783
+margin_right = 112.054
+margin_bottom = 60.8783
+text = "Name:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="LineEdit" parent="Connect"]
+margin_left = 124.187
+margin_top = 41.0402
+margin_right = 295.187
+margin_bottom = 65.0402
+placeholder_text = "username"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="IPLabel" type="Label" parent="Connect"]
+margin_left = 74.9422
+margin_top = 88.8802
+margin_right = 114.942
+margin_bottom = 102.88
+text = "IP:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="IP" type="LineEdit" parent="Connect"]
+margin_left = 125.837
+margin_top = 83.4726
+margin_right = 292.837
+margin_bottom = 107.473
+placeholder_text = "127.0.0.1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Host" type="Button" parent="Connect"]
+margin_left = 107.768
+margin_top = 137.673
+margin_right = 149.768
+margin_bottom = 157.673
+text = "Host"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Join" type="Button" parent="Connect"]
+margin_left = 190.106
+margin_top = 138.936
+margin_right = 225.106
+margin_bottom = 158.936
+text = "Join"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Players" type="Panel" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -161.0
+margin_top = -165.5
+margin_right = 161.0
+margin_bottom = 165.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ItemList" type="ItemList" parent="Players"]
+margin_left = 36.0
+margin_top = 41.0
+margin_right = 284.0
+margin_bottom = 278.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Players"]
+margin_left = 87.4056
+margin_top = 19.6001
+margin_right = 218.406
+margin_bottom = 33.6001
+text = "Waiting for players..."
+
+[node name="Start" type="Button" parent="Players"]
+margin_left = 95.0
+margin_top = 285.0
+margin_right = 212.0
+margin_bottom = 311.0
+text = "Start"
+
+[connection signal="pressed" from="Connect/Host" to="." method="_on_Host_pressed"]
+[connection signal="pressed" from="Connect/Join" to="." method="_on_Join_pressed"]
+[connection signal="pressed" from="Players/Start" to="." method="_on_Start_pressed"]
