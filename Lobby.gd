@@ -1,4 +1,4 @@
-extends Node
+extends Control
 
 const DEFAULT_PORT: int = 6969
 const MAX_PLAYERS: int = 4
@@ -16,6 +16,34 @@ func _ready() -> void:
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 
 
+remote func register_player(name: String):
+	var id := get_tree().get_rpc_sender_id()
+	players[id] = name
+	refresh_lobby()
+
+
+func refresh_lobby() -> void:
+	player_list.clear()
+	for name in players.values():
+		player_list.add_item(name)
+	player_list.sort_items_by_text()
+
+
+remotesync func start_game() -> void:
+	var world = load("res://World.tscn").instance()
+	get_tree().root.add_child(world)
+	hide()
+
+	var player_scene = load("res://Player.tscn")
+	for p_id in players:
+		var player = player_scene.instance()
+		player.set_name(str(p_id))
+		player.set_network_master(p_id)
+		player.set_player_name(players[p_id])
+		
+		world.get_node("Players").add_child(player)
+
+
 func _player_connected(id: int) -> void:
 	rpc_id(id, "register_player", player_name)
 	print("%d connected" % id)
@@ -28,6 +56,7 @@ func _player_disconnected(id: int) -> void:
 
 
 func _connected_ok() -> void:
+	players[get_tree().get_network_unique_id()] = player_name
 	$Connect.hide()
 	$Players.show()
 	$Players/Start.hide()
@@ -43,20 +72,6 @@ func _server_disconnected() -> void:
 	$Players.hide()
 	$Connect.show()
 	print("Server disconnected")
-
-
-remote func register_player(name: String):
-	var id := get_tree().get_rpc_sender_id()
-	players[id] = name
-	refresh_lobby()
-
-
-func refresh_lobby() -> void:
-	player_list.clear()
-	player_list.add_item(player_name)
-	for name in players.values():
-		player_list.add_item(name)
-	player_list.sort_items_by_text()
 
 
 func _on_Join_pressed() -> void:
@@ -78,11 +93,11 @@ func _on_Host_pressed() -> void:
 	player_name = $Connect/Name.text
 	$Connect.hide()
 	$Players.show()
+	players[1] = player_name
 	refresh_lobby()
 	print("Server hosted")
 
 
 func _on_Start_pressed() -> void:
 	assert(get_tree().is_network_server())
-	print("Game started")
-	
+	rpc("start_game")
