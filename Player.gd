@@ -1,6 +1,11 @@
 extends KinematicBody2D
 
-export var move_speed: float = 400
+var speed: float = 400
+var jump_speed: float = -800
+var gravity: float = 2000
+
+var velocity := Vector2()
+var jumping := false
 
 puppet var puppet_pos := Vector2()
 
@@ -10,28 +15,21 @@ func _ready() -> void:
 		$Camera2D.make_current()
 
 
-func _process(delta: float) -> void:
-	pass
-
-
 func _physics_process(delta: float) -> void:
-	var velocity := Vector2()
-	
+	velocity.x = 0
 	if is_network_master():
+		if Input.is_action_pressed("ui_up") and is_on_floor():
+			velocity.y = jump_speed
 		if Input.is_action_pressed("ui_left"):
-			velocity.x -= 1
+			velocity.x -= speed
 		if Input.is_action_pressed("ui_right"):
-			velocity.x += 1
-		if Input.is_action_pressed("ui_up"):
-			velocity.y -= 1
-		if Input.is_action_pressed("ui_down"):
-			velocity.y += 1
-		velocity = velocity.normalized() * move_speed
+			velocity.x += speed
+		velocity.y += gravity * delta
 		rpc_unreliable("update_player", position)
 	else:
 		position = puppet_pos
-	
-	velocity = move_and_slide(velocity)
+		#position = lerp(position, puppet_pos, 10)
+	velocity = move_and_slide(velocity, Vector2.UP)
 	if not is_network_master():
 		puppet_pos = position
 
